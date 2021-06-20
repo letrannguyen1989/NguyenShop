@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNet.Identity.EntityFramework;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -8,7 +9,7 @@ using NguyenShop.Model.Models;
 
 namespace NguyenShop.Data
 {
-    public class NguyenShopDbContext : DbContext
+    public class NguyenShopDbContext : IdentityDbContext<ApplicationUser>
     {
         public NguyenShopDbContext() : base("NguyenShopConnection")
         {
@@ -16,7 +17,7 @@ namespace NguyenShop.Data
         }
 
         public DbSet<Footer> Footers { set; get; }
-        public DbSet<Menu> Menus { set; get; }
+        public DbSet<Menu> Menus { set; get; } 
         public DbSet<MenuGroup> MenuGroups { set; get; }
         public DbSet<Order> Orders { set; get; }
         public DbSet<OrderDetail> OrderDetails { set; get; }
@@ -35,13 +36,17 @@ namespace NguyenShop.Data
         public DbSet<Tag> Tags { set; get; }
 
         public DbSet<VisitorStatistic> VisitorStatistics { set; get; }
-
         public DbSet<Error> Errors { set; get; }
 
+        public static NguyenShopDbContext Create()
+        {
+            return new NguyenShopDbContext();
+        }
 
         protected override void OnModelCreating(DbModelBuilder builder)
         {
-
+            builder.Entity<IdentityUserRole>().HasKey(i => new { i.UserId, i.RoleId });
+            builder.Entity<IdentityUserLogin>().HasKey(i => i.UserId);
         }
     }
 }
